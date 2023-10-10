@@ -7,7 +7,9 @@ app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 
 app.get('/', (req, res) => {
-	res.render('index')
+	//task list data
+	const tasks = ['study HTML', 'Study CSS', 'Study JS', 'Make food']
+	res.render('index', {tasks: tasks})
 })
 
 
