@@ -25,29 +25,17 @@
               <% } %>
               <span class="card-title">ToDo list</span>
               <div class="row">
-                <form class="col s12" method="post" action="/">
+                <form class="col s12" method="post" action="/edit-task">
                   <div class="row">
                     <div class="input-field col s12">
-                      <input placeholder='Task' id="task" type='text' name="task"> 
-                      <input id='taskId' type='hidden' name='taskId' value='6'>
+                      <input placeholder='Task' id="task" type='text' name="task" value="<%= task.task %>"> 
+                      <input id='taskId' type='hidden' name='taskId' value="<%= task.id %>">
                     </div>
                   </div>
-                     <input class='btn' type='submit' value='Add Task'>
+                     <input class='btn' type='submit' value='Save Task'>
+                     <a class='btn' href='/'>Cancel</a>
                   </form>
                 </div>  
-             </div>
-             <div class="card-action">
-               <ul class="collection">
-               <% console.log(tasks) %>
-               <% tasks.forEach((task) => { %>
-                   <li class="collection-item">
-                   <%= task.task %>
-                   <a href='edit-task/<%= task.id %>' class='secondary-content'><i class="material-icons">edit</i></a>
-                   <a href='delete-task/<%= task.id %>' class='secondary-content'><i class="material-icons">delete</i></a>
-                   </li>
-               <% }) %>
-               </ul>
-               <a href='delete-tasks' class='btn-large'>Clear All</a>
              </div>
            </div>
          </div>

@@ -39,16 +39,31 @@ app.get('/', (req, res) => {
 	// tasks list data from file
 	readFile('./tasks.json')
 		.then(tasks => {
-			res.render('index', {tasks: tasks})
-	})
+			res.render('index', {
+				tasks: tasks,
+				error: null
+			})
+		})
 })
 
 // for parsing application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true}));
 
 app.post('/', (req, res) => {
+	// control data from list
+	let error = null
+	if(req.body.task.trim().length == 0){
+		error = 'Please insert correct task data'
+		readFile('./tasks.json')
+		.then(tasks =>{
+			res.render('index',{
+				tasks: tasks,
+				error: error
+			})
+		})
+	} else {
 	// tasks list data from file
-	readFile('./tasks.json')
+		readFile('./tasks.json')
 		.then(tasks => {
 			//add new task
 			// create new id automatically
@@ -69,9 +84,39 @@ app.post('/', (req, res) => {
 			tasks.push(newTask)
 			data = JSON.stringify(tasks, null, 2)
 			writeFile('tasks.json', data)
-			// redirect to / to see result
 			res.redirect('/')
-	})
+		})
+	}
+})
+
+app.post('/edit-task', (req, res) => {
+	// control data from list
+	const editTask = req.body
+	let error = null
+	if(req.body.task.trim().length == 0){
+		error = 'Please insert correct task data'
+		readFile('./tasks.json')
+		.then(tasks =>{
+			res.render('edit',{
+				task: {task: editTask.task, id: editTask.taskId},
+				error: error
+			})
+		})
+	} else {
+	// tasks list data from file
+		readFile('./tasks.json')
+		.then(tasks => {
+			//edit task
+			tasks.forEach((task, index) => {
+			if(task.id === parseInt(req.body.taskId)){
+				task.task = req.body.task
+			}
+		})
+		data = JSON.stringify(tasks, null, 2)
+		writeFile('tasks.json', data)
+		res.redirect('/')
+		})
+	}
 })
 
 app.get('/delete-task/:taskId', (req,res)=> {
@@ -90,7 +135,23 @@ app.get('/delete-task/:taskId', (req,res)=> {
 	})
 })
 
-// clar all button 
+app.get('/edit-task/:taskId', (req,res)=> {
+	let editTaskId = parseInt(req.params.taskId)
+	readFile('./tasks.json')
+	.then(tasks => {
+		tasks.forEach((task, index) => {
+			if(task.id === editTaskId){
+				res.render('edit',{
+				task: task,
+				error: null
+			})
+			}
+		})
+	})
+})
+
+
+// clear all button 
 app.get('/delete-tasks', (req,res)=> {
 	readFile('./tasks.json')
 	.then(tasks => {
